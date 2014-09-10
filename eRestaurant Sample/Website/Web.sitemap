@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <siteMap xmlns="http://schemas.microsoft.com/AspNet/SiteMap-File-1.0" >
-    <siteMapNode url="" title=""  description="">
-        <siteMapNode url="" title=""  description="" />
-        <siteMapNode url="" title=""  description="" />
-      <siteMapNode url="" title="">
+   
         <siteMapNode title="eRestaurant"  description="eRestaurant">
           <siteMapNode url="~/Default.aspx" title="Home"  description="eRestaurant - Simple-Tasty-Elegant" />
           <siteMapNode url="~/Reservations.aspx" title="Reservations"  description="Reservations" />
@@ -23,6 +20,5 @@
             <siteMapNode url="~/Admin/ManageWaiters.aspx" title="Waiters"  description="Staff Management" />
           </siteMapNode>
         </siteMapNode>
-      </siteMapNode>
-    </siteMapNode>
+ 
 </siteMap>
