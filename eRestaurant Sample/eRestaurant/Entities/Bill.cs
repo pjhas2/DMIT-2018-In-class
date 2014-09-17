@@ -19,7 +19,7 @@ namespace eRestaurant.Entities
         public bool OrderReady { get; set; }
         public string Comment { get; set; }
 
-        public virtual Waiter Waiters { get; set; }
+        
         public virtual ICollection<BillItem> BillItems { get; set; }
     }
 }

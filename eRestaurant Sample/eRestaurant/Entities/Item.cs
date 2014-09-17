@@ -17,7 +17,7 @@ namespace eRestaurant.Entities
         public string Comment { get; set; }
         public int MenuCategoryID { get; set; }
 
-        public virtual Bill Bill { get; set; }
-        public virtual Item Item { get; set; }
+        public virtual ICollection<BillItem> BillItems { get; set; }
+        
     }
 }
