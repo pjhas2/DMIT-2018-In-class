@@ -118,7 +118,7 @@ namespace eRestaurant.BLL
         #endregion
         #region Query
         [DataObjectMethod(DataObjectMethodType.Select, false)]
-        public List<Waiter> ListAllWaiters()
+        public List<Waiter> ListAllTables()
         {
             using (RestaurantContext context = new RestaurantContext())
             {
@@ -127,7 +127,7 @@ namespace eRestaurant.BLL
         }
 
         [DataObjectMethod(DataObjectMethodType.Select, false)]
-        public Waiter GetWaiter(int waiterId)
+        public Waiter GetTables(int waiterId)
         {
             using (RestaurantContext context = new RestaurantContext())
             {
