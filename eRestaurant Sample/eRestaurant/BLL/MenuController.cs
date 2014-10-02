@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Data.Entity; //Needed for the Lambda version of the Include() method
 using eRestaurant.Entities;
 using eRestaurant.DAL;
+using eRestaurant.Entities.DTOs;
 
 namespace eRestaurant.BLL
 {
@@ -23,6 +24,33 @@ namespace eRestaurant.BLL
                 //the .Include() method on the DbSet<T> class performs "eager or force loading" of data
                 return context.Items.Include(it => it.Category).ToList();
 
+            }
+
+        }
+
+        [DataObjectMethod(DataObjectMethodType.Select,false)]
+        public List<Category> ListCategorizedMenuItems()
+        {
+            using (var context = new RestaurantContext())
+            {
+                var data = from cat in context.MenuCategories
+                           orderby cat.Description
+                           select new Category()
+                           {
+                               Description = cat.Description,
+                               MenuItems = from item in cat.Items
+                                           where item.Active
+                                           orderby item.Description
+                                           select new MenuItem()
+                                           {
+                                               Description = item.Description,
+                                               Price = item.CurrentPrice,
+                                               Calories = item.Calories,
+                                               Comment = item.Comment
+                                           }
+
+                           };
+                return data.ToList();
             }
 
         }
