@@ -14,7 +14,7 @@ namespace eRestaurant.BLL
     {
         #region Manage Waiters
         #region Command
-        [DataObjectMethod(DataObjectMethodType.Insert,false)]
+        [DataObjectMethod(DataObjectMethodType.Insert, false)]
         public int AddWaiter(Waiter item)
         {
             using (RestaurantContext context = new RestaurantContext())
@@ -27,7 +27,7 @@ namespace eRestaurant.BLL
             }
         }
 
-        [DataObjectMethod(DataObjectMethodType.Update,false)]
+        [DataObjectMethod(DataObjectMethodType.Update, false)]
         public void UpdateWaiter(Waiter item)
         {
             using (RestaurantContext context = new RestaurantContext())
@@ -36,28 +36,28 @@ namespace eRestaurant.BLL
                 var attached = context.Waiters.Attach(item);
                 var matchingWithExistingValues = context.Entry<Waiter>(attached);
                 matchingWithExistingValues.State = System.Data.Entity.EntityState.Modified;
-                context.SaveChanges();        
+                context.SaveChanges();
 
             }
 
         }
 
-        [DataObjectMethod(DataObjectMethodType.Delete,false)]
+        [DataObjectMethod(DataObjectMethodType.Delete, false)]
         public void DeleteWaiter(Waiter item)
         {
             using (RestaurantContext context = new RestaurantContext())
             {
-                
+
                 var existing = context.Waiters.Find(item.WaiterID);
                 context.Waiters.Remove(existing);
-                context.SaveChanges();              
+                context.SaveChanges();
 
             }
 
         }
         #endregion
         #region Query
-        [DataObjectMethod(DataObjectMethodType.Select,false)]
+        [DataObjectMethod(DataObjectMethodType.Select, false)]
         public List<Waiter> ListAllWaiters()
         {
             using (RestaurantContext context = new RestaurantContext())
@@ -253,5 +253,18 @@ namespace eRestaurant.BLL
         }
         #endregion
         #endregion
+
+        [DataObjectMethod(DataObjectMethodType.Select, false)]
+        public List<Reservation> LookupReservationsBySpecialEvent(string eventCode)
+        {
+            using (RestaurantContext context = new RestaurantContext())
+            {
+                var data = from info in context.Reservations
+                           where info.EventCode == eventCode
+                           select info;
+                return data.ToList();
+            }
+        
+        }
     }
 }
