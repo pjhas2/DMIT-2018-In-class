@@ -15,7 +15,7 @@
         </p>
         <p>&nbsp;</p>
         <p>
-            <asp:GridView ID="ReservationGridView" runat="server" AutoGenerateColumns="False" DataSourceID="GridODS">
+            <asp:GridView ID="ReservationGridView" runat="server" AutoGenerateColumns="False" DataSourceID="GridODS" AllowPaging="True">
                 <Columns>
                     <asp:BoundField DataField="ReservationID" HeaderText="ReservationID" SortExpression="ReservationID" />
                     <asp:BoundField DataField="CustomerName" HeaderText="CustomerName" SortExpression="CustomerName" />
