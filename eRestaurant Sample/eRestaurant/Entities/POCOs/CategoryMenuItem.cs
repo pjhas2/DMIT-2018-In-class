@@ -15,7 +15,7 @@ namespace eRestaurant.Entities.POCOs
 
         public decimal Price { get; set; }
 
-        public int Calories { get; set; }
+        public int? Calories { get; set; }
 
         public string Comment { get; set; }
     }
