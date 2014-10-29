@@ -15,7 +15,7 @@ namespace eRestaurant.BLL
     {
         #region Query Methods
         [DataObjectMethod(DataObjectMethodType.Select)]
-        public List<object> ReservationByTime(DateTime date)
+        public List<ReservationCollection> ReservationByTime(DateTime date)
         {
             using (var context = new RestaurantContext())
             {
@@ -40,7 +40,7 @@ namespace eRestaurant.BLL
                 var finalResult = from item in result
                                   orderby item.NumberInParty
                                   group item by item.Date.Hour into itemGroup
-                                  select new //ReservationCollection()
+                                  select new ReservationCollection()
                                   {
                                       Time = itemGroup.Key,
                                       Reservations = itemGroup.ToList()
