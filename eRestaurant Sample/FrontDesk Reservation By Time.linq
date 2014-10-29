@@ -1,6 +1,6 @@
 <Query Kind="Program">
   <Connection>
-    <ID>c7986cef-7b28-4404-943d-69decb96a141</ID>
+    <ID>3d09b87a-549f-4e4e-b726-0059a850c4c6</ID>
     <Persist>true</Persist>
     <Server>.</Server>
     <Database>eRestaurant</Database>
