@@ -4,6 +4,12 @@
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" Runat="Server">
+    <style type="text/css">
+        .seating {
+            display: inline-block;
+            vertical-align: top;
+        }
+    </style>
     <div class="row col-md-12">
         <h1>Front Desk</h1>
 
