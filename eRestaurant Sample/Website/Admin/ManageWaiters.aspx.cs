@@ -144,7 +144,7 @@ public partial class Admin_ManageWaiters : System.Web.UI.Page
                     LastName.Text = info.LastName;
                     Phone.Text = info.Phone;
                     Address.Text = info.Address;
-                    HireDate.Text = DateTime.Parseinfo.HireDate);
+                    HireDate.Text = info.HireDate.ToString();
                     ReleaseDate.Text = info.ReleaseDate.ToString();
 
 
