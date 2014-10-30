@@ -14,6 +14,7 @@ public partial class Admin_ManageWaiters : System.Web.UI.Page
         if(!IsPostBack)
         {
             MessageUserControl.ShowInfo("This form allows you to edit information on new and existing waiters.");
+            LoadWaiters();
         }
     }
     protected void Add_Click(object sender, EventArgs e)
@@ -72,8 +73,7 @@ public partial class Admin_ManageWaiters : System.Web.UI.Page
 
     }
 
-
-    protected void Clear_Click(object sender, EventArgs e)
+    protected void CleanFields()
     {
         WaiterID.Text = "";
         FirstName.Text = "";
@@ -82,5 +82,79 @@ public partial class Admin_ManageWaiters : System.Web.UI.Page
         Phone.Text = "";
         HireDate.Text = "";
         ReleaseDate.Text = "";
+    }
+
+    protected void Clear_Click(object sender, EventArgs e)
+    {
+        CleanFields();
+        MessageLabel.Text = "Clean Completed";
+    }
+
+    
+    protected void LoadWaiters()
+    {
+        try
+        {
+            List<Waiter> info;
+            RestaurantAdminController systemmgr = new RestaurantAdminController();
+            info = systemmgr.ListAllWaiters();
+            //setup the DDL control
+            WaitersDropDown.DataSource = info;
+            WaitersDropDown.DataTextField = "FirstName";
+            WaitersDropDown.DataValueField = "WaiterID";
+            WaitersDropDown.DataBind();
+            //Add a prompt line as the 1st line of the DDL
+            WaitersDropDown.Items.Insert(0, "Select a Waiter");
+        }
+        catch(Exception ex)
+        {
+            MessageLabel.Text = ex.Message;
+        }
+    }
+
+
+    protected void ShowWaiter_Click(object sender, EventArgs e)
+    {
+        if (WaitersDropDown.SelectedIndex == 0)
+        {
+            MessageLabel.Text = "Please select a Waiter.";         
+        }
+        else
+        {
+            try
+            {
+
+                Waiter info;
+
+                RestaurantAdminController systemmgr = new RestaurantAdminController();
+
+                info = systemmgr.GetWaiter(int.Parse(WaitersDropDown.SelectedValue));
+
+                if (info == null)
+                {
+                    MessageLabel.Text = "Waiter ID does not exist on file.";
+                    CleanFields();
+                }
+                else
+                {
+
+                    WaiterID.Text = info.WaiterID.ToString();
+
+                    FirstName.Text = info.FirstName;
+                    LastName.Text = info.LastName;
+                    Phone.Text = info.Phone;
+                    Address.Text = info.Address;
+                    HireDate.Text = DateTime.Parseinfo.HireDate);
+                    ReleaseDate.Text = info.ReleaseDate.ToString();
+
+
+                }
+            }//eof try
+            catch (Exception ex)
+            {
+                MessageLabel.Text = ex.Message;
+            }
+        }
+
     }
 }

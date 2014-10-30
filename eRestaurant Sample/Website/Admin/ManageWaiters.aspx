@@ -12,7 +12,7 @@
         <fieldset data-style="inline">
             <asp:Label ID="Label1" runat="server" Text="Select Waiter" AssociatedControlID="WaitersDropDown" />
             <asp:DropDownList ID="WaitersDropDown" runat="server"></asp:DropDownList>
-            <asp:LinkButton ID="ShowWaiter" runat="server" Text="Show Waiter" />
+            <asp:LinkButton ID="ShowWaiter" runat="server" Text="Show Waiter" OnClick="ShowWaiter_Click" />
         </fieldset>
         
         <blockquote>
