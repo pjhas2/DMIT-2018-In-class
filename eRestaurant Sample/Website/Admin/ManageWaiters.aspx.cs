@@ -71,6 +71,16 @@ public partial class Admin_ManageWaiters : System.Web.UI.Page
         // TODO: Re-populate dropdownlist of waiters. And set the selectvalue as well
 
     }
-    
-   
+
+
+    protected void Clear_Click(object sender, EventArgs e)
+    {
+        WaiterID.Text = "";
+        FirstName.Text = "";
+        LastName.Text = "";
+        Address.Text = "";
+        Phone.Text = "";
+        HireDate.Text = "";
+        ReleaseDate.Text = "";
+    }
 }

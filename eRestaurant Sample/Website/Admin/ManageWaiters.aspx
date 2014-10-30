@@ -45,7 +45,7 @@
         <fieldset data-style="btn">
             <asp:LinkButton ID="Add" runat="server" Text="Add Waiter" OnClick="Add_Click" />
             <asp:LinkButton ID="Update" runat="server" Text="Update Waiter" OnClick="Update_Click" />
-            <asp:LinkButton ID="Clear" runat="server" Text="Clear Fields" />
+            <asp:LinkButton ID="Clear" runat="server" Text="Clear Fields" OnClick="Clear_Click" />
         </fieldset>
         <my:MessageUserControl runat="server" ID="MessageUserControl" />
     </div>
