@@ -48,7 +48,7 @@
                 <asp:Repeater ID="ReservationsRepeater" runat="server" ItemType="eRestaurant.Entities.DTOs.ReservationCollection" DataSourceID="ReservationDataSource">
                 <ItemTemplate>
                     <div>
-                        <h4><%# Item.Time %></h4>
+                        <h4><%# Item.SeatingTime%></h4>
                         <asp:ListView ID="ReservationSummaryListView" runat="server" ItemType="eRestaurant.Entities.DTOs.ReservationSummary" DataSource="<%# Item.Reservations %>">
                             <LayoutTemplate>
                                 <div class="seating">

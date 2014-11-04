@@ -15,6 +15,94 @@ namespace eRestaurant.BLL
     {
         #region Query Methods
         [DataObjectMethod(DataObjectMethodType.Select)]
+        public List<SeatingSummary> SeatingByDateTime(DateTime date, TimeSpan time)
+        {
+            using (var context = new RestaurantContext())
+            {
+                // code from my LinqPad explorations
+                //Step 1 - Get the table info along with any walk-in bills and reservation bills for the specific time slot
+                var step1 = from data in context.Tables
+                            select new
+                            {
+                                Table = data.TableNumber,
+                                Seating = data.Capacity,
+                                // This sub-query gets the bills for walk-in customers
+                                Bills = from billing in data.Bills
+                                        where
+                                              billing.BillDate.Year == date.Year
+                                           && billing.BillDate.Month == date.Month
+                                           && billing.BillDate.Day == date.Day
+                                           && billing.BillDate.TimeOfDay <= time
+                                           && (!billing.OrderPaid.HasValue || billing.OrderPaid >= time)
+                                        //						   && (!billing.PaidStatus || billing.OrderPaid >= time)
+                                        select billing,
+                                //This sub-query gets the bill for reservations
+                                Reservations = from booking in data.Reservations //drill to the first collection
+                                               from billing in booking.Bills //drill to the next collection
+                                               where
+                                                    billing.BillDate.Year == date.Year
+                                                && billing.BillDate.Month == date.Month
+                                                && billing.BillDate.Day == date.Day
+                                                && billing.BillDate.TimeOfDay <= time
+                                                && (!billing.OrderPaid.HasValue || billing.OrderPaid >= time)
+                                               select billing
+                            };
+
+                //Step 2 - Union the walk-in bills and the reservation bills while extracting the relevant bill info
+                //.ToList() helps to resolve the "Types in union of Concat are constructed incompatibility" error
+                var step2 = from data in step1.ToList() //.ToList() forces the firrst result set to be in memory
+                            select new
+                            {
+                                Table = data.Table,
+                                Seating = data.Seating,
+                                CommonBilling = from info in data.Bills.Union(data.Reservations)
+                                                select new //info //changed to get only needed info, not entire entity
+                                                {
+                                                    BillID = info.BillID,
+                                                    BillTotal = info.BillItems.Sum(bi => bi.Quantity * bi.SalePrice),
+                                                    Waiter = info.Waiter.FirstName,
+                                                    Reservation = info.Reservation
+                                                }
+                            };
+
+                //Step - 3 Get just the first CommonBilling item
+                //         presumes no overlaps can occur - i.e., two groups at the same time at the same time)
+                var step3 = from data in step2
+                            select new
+                            {
+                                Table = data.Table,
+                                Seating = data.Seating,
+                                Taken = data.CommonBilling.Count() > 0,
+                                // .FirstOrDefault() is effectively "flattening" my collection of 1 item into a 
+                                // single object whose properties 1 can get in step 4 by using the dot(.) operator
+                                CommonBilling = data.CommonBilling.FirstOrDefault()
+                            };
+
+                //Step 4 - Build our intended seating summary info
+                var step4 = from data in step3
+                            select new SeatingSummary() // my DTO
+                            {
+                                Table = data.Table,
+                                Seating = data.Seating,
+                                Taken = data.Taken,
+                                //use a ternary expression to conditionally get the bill id (if it exists)
+                                BillID = data.Taken ?			// if(data.Taken) ? means if and : means else
+                                         data.CommonBilling.BillID // value to use if true
+                                       : (int?)null, 		 // value to use if false
+                                BillTotal = data.Taken ?
+                                            data.CommonBilling.BillTotal : (decimal?)null,
+                                Waiter = data.Taken ?
+                                         data.CommonBilling.Waiter : (string)null,
+                                ReservationName = data.Taken ?
+                                                  (data.CommonBilling.Reservation != null ?
+                                                   data.CommonBilling.Reservation.CustomerName : (string)null)
+                                                   : (string)null
+                            };
+                return step4.ToList();
+            }
+        }
+
+        [DataObjectMethod(DataObjectMethodType.Select)]
         public List<ReservationCollection> ReservationByTime(DateTime date)
         {
             using (var context = new RestaurantContext())
