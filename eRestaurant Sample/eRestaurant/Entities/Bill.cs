@@ -18,8 +18,8 @@ namespace eRestaurant.Entities
         public int NumberInParty { get; set; }
         public bool PaidStatus { get; set; }
         public int WaiterID { get; set; }
-        public int TableID { get; set; }
-        public int ReservationID { get; set; }
+        public int? TableID { get; set; }
+        public int? ReservationID { get; set; }
         //public bool OrderReady { get; set; }
         public string Comment { get; set; }
 
