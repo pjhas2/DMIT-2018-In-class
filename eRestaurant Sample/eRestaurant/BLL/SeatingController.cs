@@ -4,6 +4,7 @@ using eRestaurant.Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,7 +33,10 @@ namespace eRestaurant.BLL
                                               billing.BillDate.Year == date.Year
                                            && billing.BillDate.Month == date.Month
                                            && billing.BillDate.Day == date.Day
-                                           && billing.BillDate.TimeOfDay <= time
+                                           //The following won't work in EF to Entities - it will return this exception.
+                                           //"The specified type member 'TimeOfDay' is not supported..."
+                                           //&& billing.BillDate.TimeOfDay <= time
+                                           && DbFunctions.CreateTime(billing.BillDate.Hour,billing.BillDate.Minute,billing.BillDate.Second) <= time
                                            && (!billing.OrderPaid.HasValue || billing.OrderPaid >= time)
                                         //						   && (!billing.PaidStatus || billing.OrderPaid >= time)
                                         select billing,
@@ -43,7 +47,11 @@ namespace eRestaurant.BLL
                                                     billing.BillDate.Year == date.Year
                                                 && billing.BillDate.Month == date.Month
                                                 && billing.BillDate.Day == date.Day
-                                                && billing.BillDate.TimeOfDay <= time
+                                                   //The following won't work in EF to Entities - it will return this exception.
+                                                   //"The specified type member 'TimeOfDay' is not supported..."
+                                                   //&& billing.BillDate.TimeOfDay <= time
+                                           && DbFunctions.CreateTime(billing.BillDate.Hour, billing.BillDate.Minute, billing.BillDate.Second) <= time
+                                           && (!billing.OrderPaid.HasValue || billing.OrderPaid >= time)
                                                 && (!billing.OrderPaid.HasValue || billing.OrderPaid >= time)
                                                select billing
                             };
