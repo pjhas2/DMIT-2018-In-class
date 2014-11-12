@@ -52,7 +52,7 @@
                 <ItemTemplate>
                     <div>
                         <h4><%# Item.SeatingTime%></h4>
-                        <asp:ListView ID="ReservationSummaryListView" runat="server" ItemType="eRestaurant.Entities.DTOs.ReservationSummary" DataSource="<%# Item.Reservations %>">
+                        <asp:ListView ID="ReservationSummaryListView" runat="server" OnItemCommand="ReservationSummaryListView_OnItemCommand" ItemType="eRestaurant.Entities.DTOs.ReservationSummary" DataSource="<%# Item.Reservations %>">
                             <LayoutTemplate>
                                 <div class="seating">
                                     <span runat="server" id="itemPlaceHolder" />
