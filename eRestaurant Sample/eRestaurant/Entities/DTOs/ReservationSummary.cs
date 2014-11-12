@@ -22,5 +22,7 @@ namespace eRestaurant.Entities.DTOs
         public string Contact { get; set; }
 
         public IEnumerable<byte> Tables { get; set; }
+
+        public int ID { get; set; }
     }
 }

@@ -123,6 +123,7 @@ namespace eRestaurant.BLL
                                 && data.ReservationStatus == Reservation.Booked //Reservation.Booked
                              select new ReservationSummary()//DTOs.ReservationSummary()
                              {
+                                 ID = data.ReservationID, //Added for seating customers
                                  Name = data.CustomerName,
                                  Date = data.ReservationDate,
                                  NumberInParty = data.NumberInParty,

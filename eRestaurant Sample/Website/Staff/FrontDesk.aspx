@@ -3,14 +3,15 @@
 <%@ Register Src="~/UserControls/MessageUserControl.ascx" TagPrefix="uc1" TagName="MessageUserControl" %>
 
 
-<asp:Content ID="Content1" ContentPlaceHolderID="MainContent" Runat="Server">
+<asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="Server">
     <style type="text/css">
         .seating {
             display: inline-block;
             vertical-align: top;
         }
-        .inline-div{
-            display:inline;
+
+        .inline-div {
+            display: inline;
         }
     </style>
     <div class="row col-md-12">
@@ -25,22 +26,22 @@
                         <%# Item.ToShortDateString() %>
                         &ndash;
                         <%# Item.ToShortTimeString() %>
-                     </ItemTemplate>
-                 </asp:Repeater>
-                        <asp:ObjectDataSource ID="AdHocBillDateDataSource" runat="server" OldValuesParameterFormatString="original_{0}" SelectMethod="GetLastBillDateTime" TypeName="eRestaurant.BLL.AdHocController"></asp:ObjectDataSource>              
-                    </div>
-                    <asp:TextBox ID="SearchDate" runat="server" TextMode="Date" Text="2014-10-16" />
-                    <asp:TextBox ID="SearchTime" runat="server" TextMode="Time" Text="13:00" CssClass="clockpicker" />
-                     <!--Additional scripts/styles here -->
-                     <script src="../Scripts/clockpicker.js"></script>
-                    <script>
-                        $('.clockpicker').clockpicker({ donetext: 'Accept' });
-                    </script>
-                     <link itemprop="url" href="../Content/clockpicker.css" rel="stylesheet" />
-                     <link itemprop="url" href="../Content/standalone.css" rel="stylesheet" />
-                    <asp:LinkButton ID="MockDateTime" runat="server" CssClass="btn btn-primary">Post-back new date/time</asp:LinkButton>
-                    <asp:LinkButton ID="MockListBillingDateTime" runat="server" CssClass="btn btn-default" OnClick="MockListBillingDateTime_Click">Set to last-billed date/time</asp:LinkButton>         
-             </div>
+                    </ItemTemplate>
+                </asp:Repeater>
+                <asp:ObjectDataSource ID="AdHocBillDateDataSource" runat="server" OldValuesParameterFormatString="original_{0}" SelectMethod="GetLastBillDateTime" TypeName="eRestaurant.BLL.AdHocController"></asp:ObjectDataSource>
+            </div>
+            <asp:TextBox ID="SearchDate" runat="server" TextMode="Date" Text="2014-10-16" />
+            <asp:TextBox ID="SearchTime" runat="server" TextMode="Time" Text="13:00" CssClass="clockpicker" />
+            <!--Additional scripts/styles here -->
+            <script src="../Scripts/clockpicker.js"></script>
+            <script>
+                $('.clockpicker').clockpicker({ donetext: 'Accept' });
+            </script>
+            <link itemprop="url" href="../Content/clockpicker.css" rel="stylesheet" />
+            <link itemprop="url" href="../Content/standalone.css" rel="stylesheet" />
+            <asp:LinkButton ID="MockDateTime" runat="server" CssClass="btn btn-primary">Post-back new date/time</asp:LinkButton>
+            <asp:LinkButton ID="MockListBillingDateTime" runat="server" CssClass="btn btn-default" OnClick="MockListBillingDateTime_Click">Set to last-billed date/time</asp:LinkButton>
+        </div>
 
         <uc1:MessageUserControl runat="server" ID="MessageUserControl" />
 
@@ -49,29 +50,50 @@
                 <summary>Reservations by Date/Time</summary>
                 <h4>Today's Reservations</h4>
                 <asp:Repeater ID="ReservationsRepeater" runat="server" ItemType="eRestaurant.Entities.DTOs.ReservationCollection" DataSourceID="ReservationDataSource">
-                <ItemTemplate>
-                    <div>
-                        <h4><%# Item.SeatingTime%></h4>
-                        <asp:ListView ID="ReservationSummaryListView" runat="server" OnItemCommand="ReservationSummaryListView_OnItemCommand" ItemType="eRestaurant.Entities.DTOs.ReservationSummary" DataSource="<%# Item.Reservations %>">
-                            <LayoutTemplate>
-                                <div class="seating">
-                                    <span runat="server" id="itemPlaceHolder" />
-                                </div>
-                            </LayoutTemplate>
-                            <ItemTemplate>
-                                <div>
-                                    <%# Item.Name %> &mdash;
+                    <ItemTemplate>
+                        <div>
+                            <h4><%# Item.SeatingTime%></h4>
+                            <asp:ListView ID="ReservationSummaryListView" runat="server" OnItemCommand="ReservationSummaryListView_OnItemCommand" ItemType="eRestaurant.Entities.DTOs.ReservationSummary" DataSource="<%# Item.Reservations %>">
+                                <LayoutTemplate>
+                                    <div class="seating">
+                                        <span runat="server" id="itemPlaceHolder" />
+                                    </div>
+                                </LayoutTemplate>
+                                <ItemTemplate>
+                                    <div>
+                                        <%# Item.Name %> &mdash;
                                     <%# Item.NumberInParty %> &mdash;
                                     <%# Item.Status %> &mdash;
                                     PH:
                                     <%# Item.Contact %>
-                                </div>
-                            </ItemTemplate>
+                                        <asp:LinkButton ID="InsertButton" runat="server" CommandName="Seat" CommandArgument='<%# Item.ID %>'>Reservation Seating<span class="glyphicon glyphicon-plus"></span></asp:LinkButton>
+                                    </div>
+                                </ItemTemplate>
 
-                        </asp:ListView>
-                    </div>
-                </ItemTemplate>
+                            </asp:ListView>
+                        </div>
+                    </ItemTemplate>
                 </asp:Repeater>
+                <asp:Panel ID="ReservationSeatingPanel" runat="server" Visible='<%# ShowReservationSeating() %>'>
+                    <asp:DropDownList ID="WaiterDropDownList" runat="server" CssClass="seating"
+                        AppendDataBoundItems="true" DataSourceID="WaitersDataSource"
+                        DataTextField="FullName" DataValueField="WaiterId">
+                        <asp:ListItem Value="0">[select a waiter]</asp:ListItem>
+                    </asp:DropDownList>
+                    <asp:ListBox ID="ReservationTableListBox" runat="server" CssClass="seating"
+                        DataSourceID="AvailableSeatingObjectDataSource" SelectionMode="Multiple" Rows="14"
+                        DataTextField="Table" DataValueField="Table"></asp:ListBox>
+                </asp:Panel>
+                <%--For the Waiter DropDown--%>
+                <asp:ObjectDataSource runat="server" ID="WaitersDataSource" OldValuesParameterFormatString="original_{0}" SelectMethod="ListAllWaiters" TypeName="eRestaurant.BLL.RestaurantAdminController"></asp:ObjectDataSource>
+
+                <%--For the Available Tables DropDown (seating reservation)--%>
+                <asp:ObjectDataSource runat="server" ID="AvailableSeatingObjectDataSource" OldValuesParameterFormatString="original_{0}" SelectMethod="AvailableSeatingByDateTime" TypeName="eRestaurant.BLL.SeatingController">
+                    <SelectParameters>
+                        <asp:ControlParameter ControlID="SearchDate" PropertyName="Text" Name="date" Type="DateTime"></asp:ControlParameter>
+                        <asp:ControlParameter ControlID="SearchTime" PropertyName="Text" DbType="Time" Name="time"></asp:ControlParameter>
+                    </SelectParameters>
+                </asp:ObjectDataSource>
                 <asp:ObjectDataSource runat="server" ID="ReservationDataSource" OldValuesParameterFormatString="original_{0}" SelectMethod="ReservationByTime" TypeName="eRestaurant.BLL.SeatingController">
                     <SelectParameters>
                         <asp:ControlParameter ControlID="SearchDate" PropertyName="Text" Name="date" Type="DateTime"></asp:ControlParameter>
@@ -86,7 +108,7 @@
                 <asp:GridView ID="SeatingGridView" runat="server" CssClass="table table-hover table-striped table-condensed" OnSelectedIndexChanging="SeatingGridView_SelectedIndexChanging" ItemType="eRestaurant.Entities.DTOs.SeatingSummary" AutoGenerateColumns="False" DataSourceID="SeatingDataSource">
 
                     <Columns>
-                         <asp:CheckBoxField DataField="Taken" HeaderText="Taken" SortExpression="Taken" ItemStyle-HorizontalAlign="Center"></asp:CheckBoxField>
+                        <asp:CheckBoxField DataField="Taken" HeaderText="Taken" SortExpression="Taken" ItemStyle-HorizontalAlign="Center"></asp:CheckBoxField>
                         <asp:TemplateField>
                             <ItemTemplate>
                                 <asp:Label ID="TableNumber" runat="server" Text="<%# Item.Table %>"></asp:Label>
@@ -94,7 +116,7 @@
                         </asp:TemplateField>
                         <%--<asp:BoundField DataField="Table" HeaderText="Table" SortExpression="Table"></asp:BoundField>--%>
                         <asp:BoundField DataField="Seating" HeaderText="Seating" SortExpression="Seating"></asp:BoundField>
-                        
+
                         <asp:TemplateField>
                             <ItemTemplate>
                                 <%--Display either the occupied table details or a form to seat walk-in customers--%>
@@ -107,22 +129,22 @@
                                         </asp:DropDownList>
                                         <asp:ObjectDataSource runat="server" ID="WaiterDataSource" OldValuesParameterFormatString="original_{0}" SelectMethod="ListAllWaiters" TypeName="eRestaurant.BLL.RestaurantAdminController"></asp:ObjectDataSource>
                                     </span>
-                                    <span class ="input-group-addon" style="width:5px; padding:0; border:0; background-color:white;"></span>
+                                    <span class="input-group-addon" style="width: 5px; padding: 0; border: 0; background-color: white;"></span>
                                     <asp:LinkButton ID="LinkButton1" runat="server" Text="Seat Customers" CssClass="input-group-btn" CommandName="Select" CausesValidation="false" />
-                                 </asp:Panel>
+                                </asp:Panel>
 
                                 <asp:Panel ID="OccupiedSeatingPanel" runat="server" Visible="<%# Item.Taken %>">
                                     <%--Waiter - ReservationName - $$$$$--%>
                                     <%# Item.Waiter %>
                                     <asp:Label ID="ReservationNameLabel" runat="server"
-                                         Text='<%# "&mdash; " + Item.ReservationName  %>'
-                                         Visible='<%# !string.IsNullOrEmpty(Item.ReservationName) %>' />
+                                        Text='<%# "&mdash; " + Item.ReservationName  %>'
+                                        Visible='<%# !string.IsNullOrEmpty(Item.ReservationName) %>' />
                                     <asp:Panel ID="BillInfo" runat="server" CssClass="inline-div" Visible="<%# Item.BillTotal.HasValue && Item.BillTotal.Value > 0 %>">
                                         <asp:Label ID="Label1" runat="server" Text='<%# string.Format(" &ndash; {0:C}",Item.BillTotal) %>' />
                                     </asp:Panel>
                                 </asp:Panel>
                             </ItemTemplate>
-                        </asp:TemplateField>                     
+                        </asp:TemplateField>
                         <%--<asp:BoundField DataField="BillID" HeaderText="BillID" SortExpression="BillID"></asp:BoundField>
                         <asp:BoundField DataField="BillTotal" HeaderText="BillTotal" SortExpression="BillTotal"></asp:BoundField>
                         <asp:BoundField DataField="Waiter" HeaderText="Waiter" SortExpression="Waiter"></asp:BoundField>
@@ -138,6 +160,6 @@
             </details>
         </div>
 
-     </div>
+    </div>
 </asp:Content>
 
