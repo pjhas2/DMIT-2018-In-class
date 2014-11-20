@@ -1,6 +1,4 @@
-﻿using eRestaurant.BLL.Security;
-using eRestaurant.Entities.Security;
-using Microsoft.AspNet.Identity;
+﻿using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using System;
 using System.Web;
